@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CarGoGo</string>
+      <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCqe9-LKsRg6RFbrJMBRN57f2D-qKq3NBk</string>
+
+</resources>

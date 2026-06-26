@@ -1,0 +1,1 @@
+export const keyAPi = 'AIzaSyCqe9-LKsRg6RFbrJMBRN57f2D-qKq3NBk'

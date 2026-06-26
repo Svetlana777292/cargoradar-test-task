@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Разрешить HTTP для всех доменов -->
+    <base-config cleartextTrafficPermitted="true" />
+    <!-- или точечно: -->
+    <!--
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">example.com</domain>
+    </domain-config>
+    -->
+</network-security-config>

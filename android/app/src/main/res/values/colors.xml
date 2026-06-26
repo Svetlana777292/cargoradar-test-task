@@ -1,0 +1,6 @@
+<resources>
+    <color name="icon_notif_color">#205CBE</color>
+    <color name="bootsplash_background">#205cbe</color>
+    <color name="status_bar_color">#205CBE</color>
+    <color name="color_icon_bg_main">#205CBE</color>
+</resources>
