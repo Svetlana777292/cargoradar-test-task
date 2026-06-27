@@ -22,3 +22,5 @@ release_keystore_password.txt
 .vscode/
 .idea/
 .DS_Store
+
+ios/.xcode.env.local
