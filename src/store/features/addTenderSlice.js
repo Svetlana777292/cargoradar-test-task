@@ -5,7 +5,8 @@ const initialState = {
     data: {
       name: '',
       description: '',
-      price: null,        
+      price: null,
+      transportType: '',
     },
     startPoints: [],
     endPoints: [],
@@ -35,6 +36,8 @@ export const addTenderSlice = createSlice({
         state.tender.data.description = action.payload.data
       } else if(action.payload.type==='price'){
         state.tender.data.price = action.payload.data
+      } else if(action.payload.type==='transportType'){
+        state.tender.data.transportType = action.payload.data
       }
     },
     savePoint: (state, action) => {
@@ -95,7 +98,8 @@ export const addTenderSlice = createSlice({
         data: {
           name: '',
           description: '',
-          price: null,        
+          price: null,
+          transportType: '',
         },
         startPoints: [],
         endPoints: [],

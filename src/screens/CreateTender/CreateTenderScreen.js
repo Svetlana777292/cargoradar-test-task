@@ -1,5 +1,5 @@
 import React,{ useState, useEffect,useRef } from 'react';
-import { Platform, KeyboardAvoidingView, Text, View, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Keyboard, StatusBar, ScrollView } from 'react-native';
+import { Platform, KeyboardAvoidingView, Text, View, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Keyboard, StatusBar, ScrollView, Modal } from 'react-native';
 
 //packages
 // import auth from '@react-native-firebase/auth';
@@ -33,6 +33,8 @@ import { uploadImages } from '../../store/features/Upload/uploadfiles';
 import { post } from '../../store/features/api/user-api';
 import { setUserFormDataFromDB } from '../../store/features/api/userInfoForms';
 
+const TRANSPORT_TYPES = ['Тент', 'Рефрижератор', 'Изотерм', 'Бортовой', 'Контейнер', 'Самосвал']
+
 const CreateTenderScreen = ({route,navigation}) => {
   console.log('\x1b[34m%s %s\x1b[0m \x1b[34m%s', 'screens > CreateTender > CreateTenderScreen.js', 'route:',route);
   const mapViewRef = useRef(null)
@@ -47,6 +49,8 @@ const CreateTenderScreen = ({route,navigation}) => {
   // console.log('userProfile', userProfile)
   const [title, setTitle] = useState('')
   const [description, setDiscription] = useState('')
+  const [transportType, setTransportType] = useState('')
+  const [isTransportOpen, setIsTransportOpen] = useState(false)
   const [sum, setSum] = useState(0)
   const [sumWeight, setSumWeight] = useState(0)
   const [isOpenList, setIsOpenList] = useState(false)
@@ -94,6 +98,12 @@ const CreateTenderScreen = ({route,navigation}) => {
     }
   }
 
+  const handleSelectTransport = (value) => {
+    setTransportType(value)
+    dispatch(setInfoTender({type: 'transportType', data: value}))
+    setIsTransportOpen(false)
+  }
+
   const handleEditPoint = (item,index,point) => {
     console.log('handleEditPoint: ', )
     if(point==='start'){
@@ -136,9 +146,10 @@ const CreateTenderScreen = ({route,navigation}) => {
   const handleResetState = (flag) => {
     console.log('handleResetState',)
       setIsAskResetVisible(false)
-      dispatch(onResetTender()) 
+      dispatch(onResetTender())
       setTitle('')
       setDiscription('')
+      setTransportType('')
       setSum(0)
       setSumWeight(0)
       setIsDisableBtn(true)
@@ -299,6 +310,7 @@ const CreateTenderScreen = ({route,navigation}) => {
         'replyId': null,
         'name':  dataTender.data?.name?.trim(),
         'description':  dataTender.data?.description?.trim(),
+        'transportType':  dataTender.data?.transportType,
         'price': sum,
         'startPoints': updatedStartPoints, //dataTender.startPoints,
         'endPoints':  dataTender.endPoints,
@@ -427,6 +439,9 @@ const CreateTenderScreen = ({route,navigation}) => {
     } 
     if(dataTender.data.description?.length> 0) {
       setDiscription(dataTender.data.description)
+    }
+    if(dataTender.data.transportType?.length> 0) {
+      setTransportType(dataTender.data.transportType)
     }
   },[])
   
@@ -558,6 +573,15 @@ const CreateTenderScreen = ({route,navigation}) => {
                         />
                       </View>
         
+                    </View>
+
+                    <View style={[styles.whiteComponent,mainstyles.shadowPr10,styles.transportCard]}>
+                      <TouchableOpacity style={styles.transportTrigger} onPress={()=>setIsTransportOpen(true)}>
+                        <Text style={[mainstyles.text14M,{color: transportType ? THEME.GREY900 : THEME.GREY800}]}>
+                          {transportType ? transportType : 'Тип транспорта'}
+                        </Text>
+                        <Icon name={isTransportOpen ? 'chevron-up' : 'chevron-down'} size={22} color={THEME.GREY500}/>
+                      </TouchableOpacity>
                     </View>
 
                     <View style={[styles.whiteComponent,mainstyles.shadowPr10, styles.midWrapperContent]}>
@@ -693,6 +717,10 @@ const CreateTenderScreen = ({route,navigation}) => {
         
                       <View style={[mainstyles.lineTop,mainstyles.pH20,{paddingBottom: 15}]}>
                         <View style={[mainstyles.rowalCjcSb,mainstyles.pV5]}>
+                          <Text style={[mainstyles.text14M,styles.textAddress]}>Тип транспорта:</Text>
+                          <Text style={[mainstyles.text14M,{color: THEME.GREY900}]}>{transportType ? transportType : '-'}</Text>
+                        </View>
+                        <View style={[mainstyles.rowalCjcSb,mainstyles.pV5]}>
                           <Text style={[mainstyles.text14M,styles.textAddress]}>Стоимость</Text>
                           <Text style={[mainstyles.text14M,{color: THEME.GREY900}]}>{sum} BYN</Text>
                         </View>
@@ -796,6 +824,30 @@ const CreateTenderScreen = ({route,navigation}) => {
             </View>
             :null
           }
+          <Modal
+            visible={isTransportOpen}
+            transparent
+            animationType='fade'
+            onRequestClose={()=>setIsTransportOpen(false)}
+          >
+            <TouchableOpacity style={styles.transportOverlay} activeOpacity={1} onPress={()=>setIsTransportOpen(false)}>
+              <View style={[styles.transportModal,mainstyles.shadowPr10]}>
+                <Text style={[mainstyles.text14M,styles.transportModalTitle]}>Тип транспорта</Text>
+                {
+                  TRANSPORT_TYPES.map((item)=>(
+                    <TouchableOpacity key={item} style={styles.transportOption} onPress={()=>handleSelectTransport(item)}>
+                      <Text style={[mainstyles.text14R,{color: transportType===item ? THEME.PRIMARY : THEME.GREY900}]}>{item}</Text>
+                      {
+                        transportType===item ?
+                        <Icon name={'check'} size={20} color={THEME.PRIMARY}/>
+                        : null
+                      }
+                    </TouchableOpacity>
+                  ))
+                }
+              </View>
+            </TouchableOpacity>
+          </Modal>
         </View>
       </KeyboardAvoidingView>
     )
@@ -941,6 +993,43 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 12,
     right: 20
+  },
+  transportCard: {
+    marginBottom: 20,
+    paddingHorizontal: 20,
+  },
+  transportTrigger: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 15,
+  },
+  transportOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 30,
+  },
+  transportModal: {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    elevation: 15,
+  },
+  transportModalTitle: {
+    color: THEME.GREY900,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+  },
+  transportOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    paddingHorizontal: 10,
   },
 })
 
