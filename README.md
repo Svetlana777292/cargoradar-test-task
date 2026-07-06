@@ -41,11 +41,11 @@ yarn android
 ### Ошибки при запуске и как решены
 Окружение было «пустое» и слабое (7 ГБ ОЗУ, переполненный диск `C:`), поэтому:
 
-- **Пустое окружение** — доустановил JDK 17, Android command-line tools, создал эмулятор, поставил `yarn`.
-- **Переполненный диск `C:` + отсутствие NDK 26** (нужен `react-native-reanimated`) — перенёс кэш Gradle и NDK на диск `D:`, подключил NDK через `ndk.dir` в `local.properties`.
-- **Ошибка нативной сборки** `mkdir ... No such file or directory` (лимит длины пути Windows 260) — собирал с укороченного пути через `subst`.
-- **Нет `google-services.json`** (Firebase) — добавил placeholder с корректным package `com.cargoradar.main`.
-- **Слабая машина** — отключил Jetifier, собирал только под `x86_64`, добавил ретраи загрузки зависимостей в `gradle.properties`.
+- **Пустое окружение** — доустановила JDK 17, Android command-line tools, создала эмулятор, поставила `yarn`.
+- **Переполненный диск `C:` + отсутствие NDK 26** (нужен `react-native-reanimated`) — перенёесла кэш Gradle и NDK на диск `D:`, подключила NDK через `ndk.dir` в `local.properties`.
+- **Ошибка нативной сборки** `mkdir ... No such file or directory` (лимит длины пути Windows 260) — собирала с укороченного пути через `subst`.
+- **Нет `google-services.json`** (Firebase) — добавила placeholder с корректным package `com.cargoradar.main`.
+- **Слабая машина** — отключила Jetifier, собирала только под `x86_64`, добавила ретраи загрузки зависимостей в `gradle.properties`.
 
 > Примечание: правки в `android/gradle.properties`, `android/local.properties` и `android/app/google-services.json` — локальные обходы окружения и **не входят** в изменения фичи.
 
