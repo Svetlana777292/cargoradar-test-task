@@ -6,6 +6,51 @@
 
 Задача кандидата — запустить проект, разобраться в структуре кода и внести небольшое изменение в форму создания заявки.
 
+---
+
+## ✅ Решение (кандидат)
+
+### Что сделано
+Добавлен выпадающий список **«Тип транспорта»** в форму создания заявки (`CreateTenderScreen`).
+Значения: Тент, Рефрижератор, Изотерм, Бортовой, Контейнер, Самосвал.
+
+- `src/store/features/addTenderSlice.js` — поле `transportType` в состоянии формы (`tender.data`),
+  обработка в редьюсере `setInfoTender`, сброс в `onResetTender`.
+- `src/screens/CreateTender/CreateTenderScreen.js` — список значений `TRANSPORT_TYPES`,
+  сохранение выбора в Redux, карточка-триггер с выпадающим списком (`Modal`),
+  отображение выбранного значения на триггере и в сводке, передача в объект заявки при создании.
+
+Без новых зависимостей — дропдаун собран на `Modal` + `TouchableOpacity` в стиле существующей формы.
+
+### Скриншоты
+
+<p align="center">
+  <img src="screenshots/1-dropdown-selected.png" width="250" alt="Выбранный тип транспорта" />
+  <img src="screenshots/2-dropdown-open-6-values.png" width="250" alt="Открытый список из 6 значений" />
+  <img src="screenshots/3-selection-changed.png" width="250" alt="Значение изменено на Самосвал" />
+</p>
+
+### Команда запуска
+```bash
+yarn install
+yarn start
+yarn android
+```
+Проверено на Android-эмуляторе `Pixel_API36` (Android 14 / API 36, x86_64).
+
+### Ошибки при запуске и как решены
+Окружение было «пустое» и слабое (7 ГБ ОЗУ, переполненный диск `C:`), поэтому:
+
+- **Пустое окружение** — доустановил JDK 17, Android command-line tools, создал эмулятор, поставил `yarn`.
+- **Переполненный диск `C:` + отсутствие NDK 26** (нужен `react-native-reanimated`) — перенёс кэш Gradle и NDK на диск `D:`, подключил NDK через `ndk.dir` в `local.properties`.
+- **Ошибка нативной сборки** `mkdir ... No such file or directory` (лимит длины пути Windows 260) — собирал с укороченного пути через `subst`.
+- **Нет `google-services.json`** (Firebase) — добавил placeholder с корректным package `com.cargoradar.main`.
+- **Слабая машина** — отключил Jetifier, собирал только под `x86_64`, добавил ретраи загрузки зависимостей в `gradle.properties`.
+
+> Примечание: правки в `android/gradle.properties`, `android/local.properties` и `android/app/google-services.json` — локальные обходы окружения и **не входят** в изменения фичи.
+
+---
+
 ## Что нужно сделать
 
 Подробное описание задания находится в файле:
